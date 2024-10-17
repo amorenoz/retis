@@ -140,6 +140,7 @@ functional_task:
   up_script: &vagrant_up
     - vagrant box update -f ${DISTRO}
     - vagrant box prune -f
+    - make clean
     - vagrant up ${DISTRO} --no-tty || vagrant up ${DISTRO} --no-tty # Retry to overcome network glitches.
     - mkdir -p -m 0700 /root/.ssh
     - vagrant ssh-config ${DISTRO} >> /root/.ssh/config
