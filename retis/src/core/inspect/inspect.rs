@@ -40,7 +40,7 @@ impl Inspector {
 
 /// Same as parse_enum but first find the anonymous enum that contains the
 /// provided member.
-pub(crate) fn parse_anon_enum_with(
+pub(crate) fn parse_anon_enum(
     variant: &str,
     trim_start: &[&str],
 ) -> Result<HashMap<u32, String>> {

@@ -119,6 +119,7 @@ impl KernelInspector {
         Ok(inspector)
     }
 
+
     /// Convert a file containing a list of str (one per line) into a HashSet.
     /// Returns None if the file can't be read.
     fn file_to_hashset<P>(target: P) -> Option<HashSet<String>>

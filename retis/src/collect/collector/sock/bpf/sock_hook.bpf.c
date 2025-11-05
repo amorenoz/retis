@@ -6,6 +6,8 @@
 
 struct sock_event {
 	u32 inode;
+	u16 type;
+	u16 proto;
 } __binding;
 
 
@@ -58,6 +60,8 @@ DEFINE_HOOK_RAW(
 		return 0;
 
 	e->inode = inode;
+	e->type = BPF_CORE_READ(sk, sk_type);
+	e->proto = BPF_CORE_READ(sk, sk_protocol);
 
 	return 0;
 )
