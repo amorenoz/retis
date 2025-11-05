@@ -1,7 +1,6 @@
 use std::sync::Arc;
 
 use anyhow::Result;
-use btf_rs::Type;
 
 use super::sock_hook;
 use crate::{
@@ -9,7 +8,6 @@ use crate::{
     collect::{cli::Collect, Collector},
     core::{
         events::*,
-        inspect::inspector,
         probe::{manager::ProbeBuilderManager, Hook},
     },
     event_section_factory,
@@ -25,9 +23,7 @@ impl Collector for SockCollector {
     }
 
     fn known_kernel_types(&self) -> Option<Vec<&'static str>> {
-        Some(vec![
-            "struct sock *",
-        ])
+        Some(vec!["struct sock *"])
     }
 
     fn init(
@@ -42,16 +38,13 @@ impl Collector for SockCollector {
 }
 
 #[event_section_factory(FactoryId::Sock)]
-pub(crate) struct SockEventFactory {
-}
+pub(crate) struct SockEventFactory {}
 
 impl RawEventSectionFactory for SockEventFactory {
     fn create(&mut self, raw_sections: Vec<BpfRawSection>, event: &mut Event) -> Result<()> {
         let raw = parse_single_raw_section::<sock_event>(&raw_sections)?;
 
-        event.sock = Some(sockEvent {
-            inum: raw.inum,
-        });
+        event.sock = Some(SockEvent { inode: raw.inode });
 
         Ok(())
     }

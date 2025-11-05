@@ -590,6 +590,7 @@ impl FactoryId {
             9 => Ct,
             10 => Dev,
             11 => Ns,
+            12 => Sock,
             x => bail!("Can't construct a FactoryId from {}", x),
         })
     }

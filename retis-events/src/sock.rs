@@ -12,6 +12,6 @@ pub struct SockEvent {
 
 impl EventFmt for SockEvent {
     fn event_fmt(&self, f: &mut Formatter, _: &DisplayFormat) -> fmt::Result {
-        write!(f, "sock {}", self.inum)
+        write!(f, "sock {}", self.inode)
     }
 }

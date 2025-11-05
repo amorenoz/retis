@@ -1121,7 +1121,7 @@ struct nft_rule_dp {
 	u64                        is_last:1;
 	u64                        dlen:12;
 	u64                        handle:42;
-	unsigned char              data[];
+	unsigned char              data[] __attribute__((__aligned__(2)));
 };
 
 
@@ -4080,7 +4080,7 @@ struct net_device {
 	struct net_shaper_hierarchy * net_shaper_hierarchy;
 	struct hlist_head          neighbours[2];
 	struct hwtstamp_provider * hwprov;
-	u8                         priv[];
+	u8                         priv[] __attribute__((__aligned__(64)));
 } __attribute__((__aligned__(64)));
 
 enum skb_drop_reason {

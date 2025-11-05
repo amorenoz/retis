@@ -14,25 +14,10 @@ static __always_inline unsigned long sock_inode(struct socket *socket) {
 		return 0;
 
 	struct socket_alloc *alloc;
-	alloc = &container_of(socket, struct socket_alloc, socket);
+	alloc = container_of(socket, struct socket_alloc, socket);
 	if (!alloc)
 		return 0;
 	return BPF_CORE_READ(alloc, vfs_inode.i_ino);	
-}
-
-static __always_inline struct net *get_net_from_parms(struct retis_context *ctx)
-{
-	struct net *net = retis_get_net(ctx);
-	struct net_device *dev;
-
-	if (net)
-		return net;
-
-	dev = retis_get_net_device(ctx);
-	if (dev)
-		return BPF_CORE_READ(dev, nd_net.net);
-
-	return NULL;
 }
 
 static __always_inline struct sock *get_sock_from_skb(struct sk_buff *skb)
