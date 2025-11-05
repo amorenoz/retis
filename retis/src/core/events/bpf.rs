@@ -569,8 +569,9 @@ pub(crate) enum FactoryId {
     Ct = 9,
     Dev = 10,
     Ns = 11,
+    Sock = 12,
     // TODO: use std::mem::variant_count once in stable.
-    _MAX = 12,
+    _MAX = 13,
 }
 
 impl FactoryId {

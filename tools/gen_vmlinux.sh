@@ -72,6 +72,11 @@ types="
 	skb_shared_info
 	sock
 	vlan_ethhdr
+
+	`# sock collector`
+        sock
+        socket
+        socket_alloc
 "
 
 classes="sk_buff"
