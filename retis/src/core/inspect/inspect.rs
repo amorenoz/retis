@@ -1,7 +1,7 @@
 use std::{collections::HashMap, path::PathBuf};
 
 use anyhow::{bail, Result};
-use btf_rs::{self, Enum, Type, Btf};
+use btf_rs::{self, Btf, Enum, Type};
 use once_cell::sync::OnceCell;
 
 use super::kernel::KernelInspector;
@@ -40,10 +40,7 @@ impl Inspector {
 
 /// Same as parse_enum but first find the anonymous enum that contains the
 /// provided member.
-pub(crate) fn parse_anon_enum(
-    variant: &str,
-    trim_start: &[&str],
-) -> Result<HashMap<u32, String>> {
+pub(crate) fn parse_anon_enum(variant: &str, trim_start: &[&str]) -> Result<HashMap<u32, String>> {
     if let Some((btf, anon_enum)) = inspector()?
         .kernel
         .btf
@@ -61,11 +58,12 @@ pub(crate) fn parse_anon_enum(
                 }
             }
             _ => None,
-        }) {
-            parse_enum_type(btf, anon_enum, trim_start)
-        } else {
-            bail!("Failed to find an anonymous enum with variant {}", variant)
-        }
+        })
+    {
+        parse_enum_type(btf, anon_enum, trim_start)
+    } else {
+        bail!("Failed to find an anonymous enum with variant {}", variant)
+    }
 }
 
 /// Parses an enum and returns its variant names, trimed if asked to.
