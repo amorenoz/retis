@@ -60,8 +60,10 @@ pub(crate) enum OvsDataType {
     ConntrackAction = 9,
     /// Explicit drop action.
     DropAction = 10,
+    /// Socket action
+    SocketAction = 11,
     /// Flow lookup
-    FlowLookup = 11,
+    FlowLookup = 12,
 }
 
 impl OvsDataType {
@@ -158,6 +160,18 @@ pub(super) fn unmarshall_drop(raw_section: &BpfRawSection, event: &mut OvsEvent)
     let raw = parse_raw_section::<exec_drop>(raw_section)?;
 
     update_action_event(event, OvsAction::Drop { reason: raw.reason })
+}
+
+pub(super) fn unmarshall_socket(raw_section: &BpfRawSection, event: &mut OvsEvent) -> Result<()> {
+    let raw = parse_raw_section::<exec_socket>(raw_section)?;
+
+    update_action_event(
+        event,
+        OvsAction::Socket {
+            netns: raw.netns_id,
+            inode: raw.inode,
+        },
+    )
 }
 
 pub(super) fn unmarshall_ct(raw_section: &BpfRawSection, event: &mut OvsEvent) -> Result<()> {
@@ -438,6 +452,11 @@ impl RawEventSectionFactory for OvsEventFactory {
                         .ok_or_else(|| anyhow!("received action data without action"))?,
                 )?,
                 OvsDataType::DropAction => unmarshall_drop(
+                    section,
+                    ovs.as_mut()
+                        .ok_or_else(|| anyhow!("received action data without action"))?,
+                )?,
+                OvsDataType::SocketAction => unmarshall_socket(
                     section,
                     ovs.as_mut()
                         .ok_or_else(|| anyhow!("received action data without action"))?,

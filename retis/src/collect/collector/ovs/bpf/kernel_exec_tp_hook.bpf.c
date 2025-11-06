@@ -27,6 +27,12 @@ struct exec_drop {
 	u32 reason;
 } __binding;
 
+
+struct exec_socket {
+	u32 netns_id;
+	u64 inode;
+} __binding;
+
 /* Please keep in sync with its Rust counterpart in retis-events::ovs. */
 #define R_OVS_CT_COMMIT				(1 << 0)
 #define R_OVS_CT_FORCE				(1 << 1)
@@ -202,6 +208,22 @@ DEFINE_HOOK_RAW(
 
 		bpf_probe_read_kernel(&drop->reason, sizeof(drop->reason),
 				      nla_data(attr));
+	} else if (bpf_core_enum_value_exists(enum ovs_action_attr,
+					      OVS_ACTION_ATTR_SOCKET) &&
+		   exec->action == bpf_core_enum_value(enum ovs_action_attr,
+						       OVS_ACTION_ATTR_SOCKET)) {
+		struct socket_action_arg arg;
+		struct exec_socket *socket;
+
+		socket = get_event_section(event, COLLECTOR_OVS,
+					  OVS_DP_ACTION_SOCKET,
+					  sizeof(*socket));
+		if (!socket)
+			return 0;
+
+		bpf_probe_read_kernel(&arg, sizeof(arg), nla_data(attr));
+		socket->netns_id = arg.netns_id;
+		socket->inode = arg.socket_inode;
 	}
 
 	return 0;

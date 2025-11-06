@@ -20,7 +20,8 @@ enum trace_ovs_data_type {
 	OVS_DP_ACTION_RECIRC = 8,
 	OVS_DP_ACTION_CONNTRACK = 9,
 	OVS_DP_ACTION_DROP = 10,
-	OVS_FLOW_TBL_LOOKUP_RETURN = 11,
+	OVS_DP_ACTION_SOCKET = 11,
+	OVS_FLOW_TBL_LOOKUP_RETURN = 12,
 };
 
 /* Used to keep the context of an upcall operation for its upcall enqueue

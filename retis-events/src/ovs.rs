@@ -437,6 +437,9 @@ impl EventFmt for ActionEvent {
             Some(OvsAction::AddMpls(_)) => write!(f, " add_mpls")?,
             Some(OvsAction::DecTtl(_)) => write!(f, " dec_ttl")?,
             Some(OvsAction::Drop { reason }) => write!(f, " drop {reason}")?,
+            Some(OvsAction::Socket { socket }) => {
+                write!(" socket netns: {} inode: {}", socket.netns, socket.inode)?;
+            },
             None => write!(f, " unspec")?,
         }
 
@@ -515,6 +518,11 @@ pub enum OvsAction {
     DecTtl(OvsDummyAction),
     #[serde(rename = "drop")]
     Drop { reason: u32 },
+    #[serde(rename = "socket")]
+    Socket {
+        #[serde(flatten)]
+        socket: OvsActionSocket,
+    },
 }
 
 /// OVS output action data.
@@ -531,6 +539,16 @@ pub struct OvsActionOutput {
 pub struct OvsActionRecirc {
     /// Recirculation id.
     pub id: u32,
+}
+
+/// OVS recirc action data.
+#[event_type]
+#[derive(Copy, Default, PartialEq)]
+pub struct OvsActionSocket {
+    /// Network Namespace ID
+    pub netns: u32,
+    /// Socket inode
+    pub inode: u64,
 }
 
 /// OVS conntrack flags
